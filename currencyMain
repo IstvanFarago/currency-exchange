@@ -1,0 +1,88 @@
+const readlineSync = require("readline-sync");
+
+console.log("Welcome to Currency Converter!");
+console.log(`1 USD equals 1 USD
+1 USD equals 113.5 JPY
+1 USD equals 0.89 EUR
+1 USD equals 74.36 RUB
+1 USD equals 0.75 GBP`);
+
+let currencies = {
+  USD: 1,
+  JPY: 113.5,
+  EUR: 0.89,
+  RUB: 74.36,
+  GBP: 0.75,
+};
+
+let shouldExit = false;
+let currencyFrom, currencyTo, amount;
+
+while (!shouldExit) {
+  const question = Number(
+    readlineSync.question(
+      `What do you want to do?
+1-Convert currencies 2-Exit program
+`
+    )
+  );
+
+  if (!(question === 1 || question === 2)) {
+    console.log("Unknown input");
+    continue; // prompt for new input
+  } else if (question === 2) {
+    console.log("Have a nice day!");
+    shouldExit = true;
+  } else {
+    inputFrom();
+    break;
+  }
+}
+
+function inputFrom() {
+  while (!shouldExit) {
+    console.log("What do you want to convert?");
+    currencyFrom = readlineSync.question("From: ").toUpperCase();
+    if (!currencies.hasOwnProperty(currencyFrom)) {
+      console.log("Unknown currency");
+    } else {
+      inputTo();
+      break;
+    }
+  }
+}
+
+function inputTo() {
+  while (!shouldExit) {
+    currencyTo = readlineSync.question("To: ").toUpperCase();
+    if (!currencies.hasOwnProperty(currencyTo)) {
+      console.log("Unknown currency");
+    } else {
+      inputAmount();
+      break;
+    }
+  }
+}
+
+function inputAmount() {
+  while (!shouldExit) {
+    amount = parseFloat(readlineSync.question("Amount: "));
+    if (isNaN(amount)) {
+      console.log("The amount has to be a number");
+    } else if (amount < 1) {
+      console.log("The amount can not be less than 1");
+    } else {
+      logic();
+      break;
+    }
+  }
+}
+
+function logic() {
+  let result = amount * (1 / currencies[currencyFrom]) * currencies[currencyTo];
+  console.log(
+    `Result: ${amount} ${currencyFrom} equals ${result.toFixed(
+      4
+    )} ${currencyTo}`
+  );
+}
